@@ -1,7 +1,9 @@
+package products;
+
 /**
  * Class for products
  */
-class ProductData {
+public class ProductData {
     private String name;
     private int quantity;
     private double price;
@@ -12,28 +14,28 @@ class ProductData {
      * @param quantity - int quantity
      * @param price - double price - 0.00
      */
-    ProductData(String name, int quantity, double price) {
+    public ProductData(String name, int quantity, double price) {
         this.name = name;
         this.quantity = quantity;
         this.price = price;
     }
 
-    String getName() {
+    public String getName() {
         return this.name;
     }
 
-    int getQuantity() {
+    public int getQuantity() {
         return quantity;
     }
 
-    double getPrice() {
+    public double getPrice() {
         return price;
     }
-    void decreaseQuantity() {
+    public void decreaseQuantity() {
         this.quantity--;
     }
 
-    void increaseQuantity(int quantity) {
+    public void increaseQuantity(int quantity) {
         this.quantity += quantity;
     }
 }
