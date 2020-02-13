@@ -1,43 +1,45 @@
 package utils;
 
-import coins.CoinsData;
-import products.ProductData;
-
-import java.util.ArrayList;
+import main.VendingMachine;
 
 public class MenuHelper {
 
     final String SEPARATOR = "----------";
     final String CANCEL_OPTION = "[0] Cancel";
+    final String INSERT_PRODUCT = "Insert product";
+    final String NO_PRODUCTS = "NO PRODUCTS INSERTED IN THE MACHINE";
+    final String NO_COINS = "NO COINS INSERTED IN THE MACHINE";
 
-    public MenuHelper() {
+    VendingMachine vm;
+
+    public MenuHelper(VendingMachine vm) {
+        this.vm = vm;
     }
 
     /**
      * The default coins menu
-     * @param coins instance of coins
      * @return select coin menu
      */
-    public String selectCoinMenu(ArrayList<CoinsData> coins) {
+    public String selectCoinMenu() {
         StringBuilder builder = new StringBuilder();
         builder.append(SEPARATOR).append(System.lineSeparator());
-        for (int i = 0; i < coins.size(); i++) { builder
+        for (int i = 1; i <= vm.getCoinsSize(); i++) { builder
                 .append("[")
-                .append(i + 1)
+                .append(i)
                 .append("] ")
-                .append(coins.get(i).getName())
+                .append(vm.getCoins().getStorage().get(i).getName())
                 .append(System.lineSeparator());
         }
         builder.append(CANCEL_OPTION).append(System.lineSeparator())
                 .append(SEPARATOR).append(System.lineSeparator())
-                .append(selectCoinsRange(coins)).append(System.lineSeparator()).append(SEPARATOR);
+                .append(selectCoinsRange()).append(System.lineSeparator()).append(SEPARATOR);
         return builder.toString();
     }
 
-    public String remainingAmountToInsert(int selectedProduct, Double insertedAmount, ArrayList<ProductData> products) {
-        return SEPARATOR + "\n" + products.get(selectedProduct - 1).getName() +
+    public String remainingAmountToInsert(int selectedProduct, Double insertedAmount) {
+        return SEPARATOR + "\n" + vm.getProducts().getStorage().get(selectedProduct).getName() +
                 " price: " +
-                String.format("%.2f", products.get(selectedProduct - 1).getPrice()) +
+                String.format("%.2f", vm.getProducts().getStorage().get(selectedProduct).getPrice()) +
                 " EUR" + System.lineSeparator() +
                 "Inserted coins: " +
                 String.format("%.2f", insertedAmount) +
@@ -46,67 +48,104 @@ public class MenuHelper {
 
     /**
      * dynamic select coin range menu
-     * @param coins instance of coins
      * @return coins menu range to select
      */
-    public String selectCoinsRange(ArrayList<CoinsData> coins) {
-        return "PLEASE INSERT A COIN [1-" + coins.size() + "]";
+    public String selectCoinsRange() {
+        return "PLEASE INSERT A COIN [1-" + vm.getCoinsSize() + "]";
     }
 
     /**
-     * The default products menu
-     * @param products instance of products
+     * The user products menu
      * @return select products menu
      */
-    public String selectProductMenu(ArrayList<ProductData> products) {
+    public String selectProductMenuUser() {
         StringBuilder builder = new StringBuilder();
         builder.append(SEPARATOR).append(System.lineSeparator());
-        for (int i = 0; i < products.size(); i++) { builder
+        for (int i = 1; i <= vm.getProductsSize(); i++) { builder
                 .append("[")
-                .append(i + 1)
+                .append(i)
                 .append("] ")
-                .append(products.get(i).getName())
+                .append(vm.getProducts().getStorage().get(i).getName())
                 .append(" ")
-                .append(String.format("%.2f", products.get(i).getPrice()))
+                .append(String.format("%.2f", (vm.getProducts().getStorage().get(i).getPrice())))
                 .append(" EUR")
                 .append(System.lineSeparator());
         }
         builder.append(SEPARATOR).append(System.lineSeparator())
-                .append(selectProductRange(products)).append(System.lineSeparator())
+                .append(selectProductRange()).append(System.lineSeparator())
+                .append(SEPARATOR);
+        return builder.toString();
+    }
+
+    /**
+     * The maintenance products menu
+     * @return select products menu
+     */
+    public String selectProductMenuMaintenance(VendingMachine vm) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(SEPARATOR).append(System.lineSeparator());
+        for (int i = 1; i <= vm.getProductsSize(); i++) { builder
+                .append("[")
+                .append(i)
+                .append("] ")
+                .append(vm.getProducts().getStorage().get(i).getName())
+                .append(System.lineSeparator());
+        }
+        builder.append("[")
+                .append(vm.getProductsSize() + 1)
+                .append("] ")
+                .append(INSERT_PRODUCT)
+                .append(System.lineSeparator())
+                .append(CANCEL_OPTION)
+                .append(System.lineSeparator());
+        builder.append(SEPARATOR).append(System.lineSeparator())
+                .append(selectProductRange()).append(System.lineSeparator())
                 .append(SEPARATOR);
         return builder.toString();
     }
 
     /**
      * dynamic select product range menu
-     * @param products instance of products
      * @return products menu range to select
      */
-    String selectProductRange(ArrayList<ProductData> products) {
-        return "PLEASE SELECT A PRODUCT [1-" + products.size() + "]";
+    String selectProductRange() {
+        return "PLEASE SELECT A PRODUCT [1-" + vm.getProductsSize() + "]";
     }
 
     /**
      * show the remaining products in the machine.
-     * @param products instance of products
      * @return products quantities
      */
-    public String checkProducts(ArrayList<ProductData> products) {
+    public String checkProducts() {
         StringBuilder builder = new StringBuilder();
-        products.forEach(product -> builder.append(product.getName()).append(" ").append(product.getQuantity()).append(" "));
-        builder.deleteCharAt(builder.toString().length() - 1);
+        if (vm.getProductsSize() > 0) {
+            vm.getProducts().getStorage().forEach((key, value) -> builder.append(value.getName()).append(" ").append(value.getQuantity()).append(" "));
+            builder.deleteCharAt(builder.toString().length() - 1);
+        } else {
+            builder.append(NO_PRODUCTS);
+        }
         return builder.toString();
     }
 
     /**
      * show the remaining coins in the machine.
-     * @param coins instance of coins
      * @return coins quantities
      */
-    public String checkCoins(ArrayList<CoinsData> coins) {
+    public String checkCoins() {
         StringBuilder builder = new StringBuilder();
-        coins.forEach(coin -> builder.append(coin.getName()).append(" ").append(coin.getQuantity()).append(" "));
-        builder.deleteCharAt(builder.toString().length() - 1);
+        if (vm.getCoinsSize() > 0) {
+            vm.getCoins().getStorage().forEach((key, value) -> builder.append(value.getName()).append(" ").append(value.getQuantity()).append(" "));
+            builder.deleteCharAt(builder.toString().length() - 1);
+        } else {
+            builder.append(NO_COINS);
+        }
         return builder.toString();
+    }
+
+    //TODO REFACTOR
+    public void printState(String str) {
+        System.out.println(SEPARATOR);
+        System.out.println(str);
+        System.out.println(SEPARATOR);
     }
 }

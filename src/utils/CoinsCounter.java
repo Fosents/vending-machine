@@ -1,6 +1,7 @@
 package utils;
 
-import coins.CoinsData;
+import storage.CoinsData;
+import storage.Storage;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -10,9 +11,9 @@ import java.util.ArrayList;
  */
 public class CoinsCounter {
 
-    ArrayList<CoinsData> coins;
+    Storage<CoinsData> coins;
 
-    public CoinsCounter(ArrayList<CoinsData> coins) {
+    public CoinsCounter(Storage<CoinsData> coins) {
         this.coins = coins;
     }
 
@@ -25,8 +26,8 @@ public class CoinsCounter {
      * @param selectedCoin - coin inserted
      */
     public double insert(int selectedCoin) {
-        String selectedCoinName = coins.get(selectedCoin - 1).getName();
-        double selectedCoinValue = coins.get(selectedCoin - 1).getValue();
+        String selectedCoinName = coins.getStorage().get(selectedCoin).getName();
+        double selectedCoinValue = coins.getStorage().get(selectedCoin).getValue();
         boolean isPresent = false;
 
         for (CoinsData coin : coinsTemp) {
@@ -76,28 +77,28 @@ public class CoinsCounter {
      * @param calcChange - the amount of change
      * @return - returned coins as String
      */
-    public String calculateReturningCoins(String calcChange, ArrayList<CoinsData> coins) {
+    public String calculateReturningCoins(String calcChange, Storage<CoinsData> coins) {
         StringBuilder coinsAsChange = new StringBuilder();
         BigDecimal calculatedChangeDecimal = new BigDecimal(calcChange);
 
         while (Double.parseDouble(calculatedChangeDecimal.toString()) > 0.00) {
-            int coinIndex = 0;
-            for (int i = 0; i < coins.size(); i++) {
-                if (coins.get(i).getQuantity() > 0 &&
-                        coins.get(i).getValue() <= Double.parseDouble(calculatedChangeDecimal.toString()) &&
-                                coins.get(i).getValue() > coins.get(coinIndex).getValue()){
+            int coinIndex = 1;
+            for (int i = 1; i < coins.getSize(); i++) {
+                if (coins.getItem(i).getQuantity() > 0 &&
+                        coins.getItem(i).getValue() <= Double.parseDouble(calculatedChangeDecimal.toString()) &&
+                                coins.getItem(i).getValue() > coins.getItem(coinIndex).getValue()){
                     coinIndex = i;
                 }
             }
             int quantityTemp = 0;
-            while (coins.get(coinIndex).getValue() <= Double.parseDouble(calculatedChangeDecimal.toString()) &&
-                    coins.get(coinIndex).getQuantity() > 0) {
-                coins.get(coinIndex).decreaseQuantity();
+            while (coins.getItem(coinIndex).getValue() <= Double.parseDouble(calculatedChangeDecimal.toString()) &&
+                    coins.getItem(coinIndex).getQuantity() > 0) {
+                coins.getItem(coinIndex).decreaseQuantity();
                 quantityTemp ++;
-                BigDecimal coinValueDecimal = BigDecimal.valueOf(coins.get(coinIndex).getValue());
+                BigDecimal coinValueDecimal = BigDecimal.valueOf(coins.getItem(coinIndex).getValue());
                 calculatedChangeDecimal = calculatedChangeDecimal.subtract(coinValueDecimal);
             }
-            coinsAsChange.append(coins.get(coinIndex).getName()).append(" ")
+            coinsAsChange.append(coins.getItem(coinIndex).getName()).append(" ")
                     .append("(").append(quantityTemp).append(")").append(" ");
         }
         return coinsAsChange.toString();
@@ -106,9 +107,9 @@ public class CoinsCounter {
     /**
      * Adds inserted coins to the coins in the machine and reset
      */
-    public void addInsertedCoins(ArrayList<CoinsData> coins) {
+    public void addInsertedCoins(Storage<CoinsData> coins) {
         for (CoinsData coinTemp : coinsTemp) {
-            for (CoinsData coin : coins) {
+            for (CoinsData coin : coins.getStorage().values()) {
                 if (coin.getName().equals(coinTemp.getName())) {
                     coin.increaseQuantity(coinTemp.getQuantity());
                 }
