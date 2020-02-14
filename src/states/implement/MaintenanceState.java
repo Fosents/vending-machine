@@ -4,11 +4,7 @@ import main.VendingMachine;
 import menu.MenuPrinter;
 import states.IState;
 import storage.ProductData;
-import utils.MenuHelper;
 import utils.UserInput;
-
-import java.util.InputMismatchException;
-import java.util.Scanner;
 
 public class MaintenanceState implements IState {
 
@@ -21,7 +17,6 @@ public class MaintenanceState implements IState {
             "[3] Insert Product\n" +
             "[0] Return to MAIN MENU";
     private static final String NOT_A_VALID_OPTION = "NOT A VALID OPTION";
-    private static final  String INVALID_INPUT = "INVALID INPUT! PLEASE SELECT AGAIN";
 
     UserInput input;
     VendingMachine vm;
@@ -38,7 +33,6 @@ public class MaintenanceState implements IState {
      */
     @Override
     public void initMenu() {
-        MenuHelper helper = new MenuHelper(vm);
         checkForWarnings();
         while (true) {
             System.out.println(SEPARATOR);
@@ -52,9 +46,8 @@ public class MaintenanceState implements IState {
             } else if (choice > 0 && choice <= 3) {
                 switch (choice) {
                     case 1 :
-                        System.out.println(helper.checkCoins());
-                        System.out.println(SEPARATOR);
-                        System.out.println(helper.checkProducts());
+                        printer.printProducts(vm.getProductsStorage());
+                        printer.printCoins(vm.getCoinsStorage());
                         break;
                     case 2 :
                         maintenanceInsertCoinsMenu();
@@ -64,8 +57,7 @@ public class MaintenanceState implements IState {
                         break;
                 }
             } else {
-                System.out.println(SEPARATOR);
-                System.out.println(NOT_A_VALID_OPTION);
+                printer.printNotValidOption();
             }
         }
     }
@@ -112,10 +104,9 @@ public class MaintenanceState implements IState {
      * The maintenance insert coins quantity menu
      */
     void maintenanceInsertCoinsMenu() {
-        MenuHelper helper = new MenuHelper(vm);
         while (true) {
-            System.out.println(helper.checkCoins());
-            System.out.println(helper.selectCoinMenu());
+            printer.printCoins(vm.getCoinsStorage());
+            printer.printCoinsMenuMaintenance(vm);
             int choice = input.getInt();
             if (choice > 0 && choice <= vm.getCoinsSize()) {
                 System.out.println(SEPARATOR);
@@ -139,10 +130,8 @@ public class MaintenanceState implements IState {
      * The maintenance insert products quantity menu
      */
     void maintenanceInsertProductMenu() {
-        MenuHelper helper = new MenuHelper(vm);
         while (true) {
-            System.out.println(helper.checkProducts());
-            System.out.println(helper.selectProductMenuMaintenance(vm));
+            printer.printProductMenuMaintenance(vm);
             int choice = input.getInt();
             if (choice == 0) {
                 break;
@@ -161,12 +150,5 @@ public class MaintenanceState implements IState {
                 System.out.println(NOT_A_VALID_OPTION);
             }
         }
-    }
-
-    //TODO REFACTOR
-    public void printState(String str) {
-        System.out.println(SEPARATOR);
-        System.out.println(str);
-        System.out.println(SEPARATOR);
     }
 }

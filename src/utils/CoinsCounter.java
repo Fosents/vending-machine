@@ -124,12 +124,11 @@ public class CoinsCounter {
     public void returnInsertedCoins() {
         if (coinsTemp.size() > 0) {
             System.out.print("GET YOUR COINS: ");
-            for (CoinsData coin :
-                    coinsTemp) {
+            for (CoinsData coin : coinsTemp) {
                 System.out.print("(" + coin.getQuantity() + ")" + " " + coin.getName() + " ");
             }
             System.out.println();
-            coinsTemp.clear();
+            coinsTemp = new ArrayList<>();
         }
     }
 }

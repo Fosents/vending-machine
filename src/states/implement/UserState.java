@@ -4,15 +4,11 @@ import main.VendingMachine;
 import menu.MenuPrinter;
 import states.IState;
 import utils.CoinsCounter;
-import utils.MenuHelper;
 import utils.UserInput;
 
 public class UserState implements IState {
 
     final int MIN_TEN_CENTS_TO_OPERATE = 20;
-    final String SEPARATOR = "----------";
-    final String OUT_OF_PRODUCT = "SORRY! MACHINE OUT OF ";
-    final String OUT_OF_ORDER = "SORRY! MACHINE OUT OF ORDER\nENTER MAINTENANCE";
 
     UserInput input;
     VendingMachine vm;
@@ -29,11 +25,10 @@ public class UserState implements IState {
      */
     @Override
     public void initMenu() {
-        MenuHelper helper = new MenuHelper(vm);
-        System.out.println(SEPARATOR);
-//        print products and coins to check vm is working
-        System.out.println(helper.checkProducts());
         while (true) {
+//            print products and coins to check vm is working
+//            printer.printCoins(vm.getCoins().getStorage());
+//            printer.printProducts(vm.getProducts().getStorage());
             int productIndex;
             if (!notEnoughCoins()) {
                 productIndex = selectProduct();
@@ -45,26 +40,21 @@ public class UserState implements IState {
                 if (getProductQuantity(productIndex) != 0) {
                     insertCoins(productIndex);
                 } else {
-                    System.out.println(SEPARATOR);
-                    System.out.println(OUT_OF_PRODUCT + getProductName(productIndex).toUpperCase());
+                    printer.printOutOfProduct(vm.getProducts().getItem(productIndex));
                 }
             } else if (productIndex == 159357) {
                 break;
             } else {
-                printer.printNotValidInput();
+                printer.printNotValidOption();
             }
-//            print products and coins to check vm is working
-            System.out.println(SEPARATOR);
-            System.out.println(helper.checkCoins());
-            System.out.println(helper.checkProducts());
+
+
         }
     }
 
     boolean notEnoughCoins() {
         if (vm.getTenCentsCoinsQuantity() < this.MIN_TEN_CENTS_TO_OPERATE) {
-            System.out.println(SEPARATOR);
-            System.out.println(OUT_OF_ORDER);
-            System.out.println(SEPARATOR);
+            printer.printOutOfOrder();
             return true;
         }
         return false;
@@ -75,8 +65,7 @@ public class UserState implements IState {
      * @return - chosen product as int
      */
     private int selectProduct() {
-        MenuHelper helper = new MenuHelper(vm);
-        System.out.println(helper.selectProductMenuUser());
+        printer.printProductMenuUser(vm);
         return input.getInt();
     }
 
@@ -85,7 +74,6 @@ public class UserState implements IState {
      * @param productIndex - number of the chosen product
      */
     private void insertCoins(int productIndex) {
-        MenuHelper helper = new MenuHelper(vm);
         CoinsCounter counter = new CoinsCounter(vm.getCoins());
 
         double selectedProductPrice = getProductPrice(productIndex);
@@ -99,7 +87,7 @@ public class UserState implements IState {
                 counter.returnInsertedCoins();
                 break;
             } else {
-                printer.printNotValidInput();
+                printer.printNotValidOption();
             }
         }
 
@@ -109,15 +97,13 @@ public class UserState implements IState {
             vm.getProducts().getItem(productIndex).decreaseQuantity();
 
             String change = counter.calculateChange(insertedAmount, selectedProductPrice);
-            System.out.println(helper.remainingAmountToInsert(productIndex, insertedAmount));
+            printer.printRemainingAmountToInsert(vm, productIndex, insertedAmount);
 //            System.out.println(getProductName(selectedProduct - 1) + " price: " +
 //                    String.format("%.2f", selectedProductPrice) + " EUR | inserted coins: " +
 //                    String.format("%.2f", insertedAmount) + " EUR");
-            System.out.println(SEPARATOR);
-            System.out.println("THANK YOU! PLEASE GET YOUR " + getProductName(productIndex).toUpperCase());
+            printer.printWithSeparator("THANK YOU! PLEASE GET YOUR " + getProductName(productIndex).toUpperCase());
             if (!change.equals("0.0")) {
-                System.out.println(SEPARATOR);
-                System.out.println("COINS RETURNED AS CHANGE: " + counter.calculateReturningCoins(change, vm.getCoins()));
+                printer.printWithSeparator("COINS RETURNED AS CHANGE: " + counter.calculateReturningCoins(change, vm.getCoins()));
             }
         }
     }
@@ -127,9 +113,8 @@ public class UserState implements IState {
      * @return - selected coin as int
      */
     private int selectCoin(int selectedProduct, Double insertedAmount) {
-        MenuHelper helper = new MenuHelper(vm);
-        System.out.println(helper.remainingAmountToInsert(selectedProduct, insertedAmount));
-        System.out.println(helper.selectCoinMenu());
+        printer.printRemainingAmountToInsert(vm, selectedProduct, insertedAmount);
+        printer.printCoinsMenuUser(vm);
         return input.getInt();
     }
 
@@ -150,12 +135,4 @@ public class UserState implements IState {
     private int getProductQuantity(int productIndex) {
         return vm.getProducts().getItem(productIndex).getQuantity();
     }
-
-    //TODO REFACTOR
-    public void printState(String str) {
-        System.out.println(SEPARATOR);
-        System.out.println(str);
-        System.out.println(SEPARATOR);
-    }
-
 }

@@ -2,6 +2,8 @@ package main;
 
 import storage.*;
 
+import java.util.Map;
+
 /**
  * Start VM Class
  */
@@ -34,12 +36,20 @@ public class VendingMachine {
         return this.products;
     }
 
+    public Map<Integer, ProductData> getProductsStorage() {
+        return products.getStorage();
+    }
+
     public int getProductsSize() {
         return this.products.getSize();
     }
 
     public Storage<CoinsData> getCoins() {
         return this.coins;
+    }
+
+    public Map<Integer, CoinsData> getCoinsStorage() {
+        return coins.getStorage();
     }
 
     public int getCoinsSize() {

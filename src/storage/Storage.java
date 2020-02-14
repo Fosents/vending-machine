@@ -19,12 +19,6 @@ public class Storage<T> {
         return this.storage.get(position);
     }
 
-
-//
-//    public void increaseQuantity(int quantity) {
-//        this.quantity += quantity;
-//    }
-
     public int getSize() {
         return storage.size();
     }
