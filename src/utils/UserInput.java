@@ -1,5 +1,7 @@
 package utils;
 
+import enums.Input;
+
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -14,12 +16,24 @@ public class UserInput {
     final String SEPARATOR = "----------";
     final String INVALID_INPUT = "INVALID INPUT! PLEASE SELECT AGAIN";
 
-    public int getInt() {
-        int select = 0;
+    /**
+     * Get int from console
+     * @return int number
+     */
+    public String getInput(Input type) {
+        String select = null;
         boolean correct = false;
         do {
             try {
-                select = input.nextInt();
+                if (type == Input.INT) {
+                    int collected = input.nextInt();
+                    select = String.valueOf(collected);
+                } else if (type == Input.DOUBLE) {
+                    double collected = input.nextDouble();
+                    select = String.valueOf(collected);
+                } else if (type == Input.STRING) {
+                    select = input.next();
+                }
                 correct = true;
             } catch (InputMismatchException ignored) {
                 printState(INVALID_INPUT);
@@ -28,6 +42,20 @@ public class UserInput {
         } while (!correct);
         return select;
     }
+
+    public int getInt() {
+        return Integer.parseInt(this.getInput(Input.INT));
+    }
+
+    public double getDouble() {
+        return Double.parseDouble(this.getInput(Input.DOUBLE));
+    }
+
+    public String getString() {
+        return (this.getInput(Input.STRING));
+    }
+
+
 
     public void printState(String str) {
         System.out.println(SEPARATOR);

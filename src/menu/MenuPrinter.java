@@ -11,7 +11,10 @@ public class MenuPrinter {
     private static final String SEPARATOR = "----------";
     private static final String MAIN_MENU = "MAIN MENU";
     private static final String MAIN_MENU_OPTIONS = "[1] User\n[2] Maintenance\n[0] Shutdown";
+    //TODO options map
+    private static final String MAINTENANCE_MENU_OPTIONS = "[1] Check Coins And Product Quantities\n[2] Insert Coins\n[3] Insert Product\n[0] Return to MAIN MENU";
     private static final String MAIN_MENU_SELECT = "PLEASE SELECT AN OPTION [1-2]";
+    private static final String MAINTENANCE_MENU_SELECT = "PLEASE SELECT AN OPTION [1-3]";
     private static final String NOT_A_VALID_OPTION = "NOT A VALID OPTION";
     private static final String SELECT_OPTION = "Select an option";
     private static final String NO_PRODUCTS = "NO PRODUCTS INSERTED IN THE MACHINE";
@@ -23,13 +26,20 @@ public class MenuPrinter {
     private static final String COINS_TITLE = "COINS";
     private static final String CANCEL_OPTION = "[0] Cancel";
     private static final String INSERT_NEW = "Insert new";
-
+    private static final String REMOVE = "Remove";
 
     public void printMainMenu() {
         printWithSeparator(MAIN_MENU);
         printWithSeparator(MAIN_MENU_OPTIONS);
         printWithSeparator(MAIN_MENU_SELECT);
     }
+
+    public void printMaintenanceMenu() {
+        printWithSeparator(MAINTENANCE_MENU_OPTIONS);
+        printWithSeparator(MAINTENANCE_MENU_SELECT);
+    }
+
+
 
     /**
      * Print the remaining products in the machine.
@@ -143,10 +153,10 @@ public class MenuPrinter {
 
 
     StringBuilder maintenanceAddOptions(VendingMachine vm) {
-        return new StringBuilder("[").append(vm.getProductsSize() + 1)
-                .append("] ")
-                .append(INSERT_NEW)
-                .append(System.lineSeparator())
+        return new StringBuilder("[").append(vm.getProductsSize() + 1).append("] ")
+                .append(INSERT_NEW).append(System.lineSeparator())
+                .append("[").append(vm.getProductsSize() + 2).append("] ")
+                .append(REMOVE).append(System.lineSeparator())
                 .append(CANCEL_OPTION);
     }
 
