@@ -1,36 +1,36 @@
-package products;
+package storage;
 
 /**
- * Class for products
+ * Class for products data
  */
 public class ProductData {
     private String name;
-    private int quantity;
     private double price;
+    private int quantity;
 
     /**
-     * Products constructor
-     * @param name - String name
-     * @param quantity - int quantity
-     * @param price - double price - 0.00
+     * Init product
+     * @param name product name
+     * @param price product price
      */
-    public ProductData(String name, int quantity, double price) {
+    public ProductData(String name, double price, int quantity) {
         this.name = name;
-        this.quantity = quantity;
         this.price = price;
+        this.quantity =quantity;
     }
 
     public String getName() {
         return this.name;
     }
 
+    public double getPrice() {
+        return price;
+    }
+
     public int getQuantity() {
         return quantity;
     }
 
-    public double getPrice() {
-        return price;
-    }
     public void decreaseQuantity() {
         this.quantity--;
     }

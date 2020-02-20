@@ -1,19 +1,18 @@
-package coins;
+package storage;
 
 /**
- * Class for coins
+ * Class for coins data
  */
 public class CoinsData {
 
     private String name;
-    private int quantity;
     private double value;
+    private int quantity;
 
     /**
-     * Coins constructor
-     * @param name String coin name
-     * @param value String value - 0.00
-     * @param quantity - int quantity
+     * Init coin
+     * @param name coin name
+     * @param value coin value
      */
     public CoinsData(String name, double value, int quantity) {
         this.name = name;
@@ -25,12 +24,12 @@ public class CoinsData {
         return name;
     }
 
-    public int getQuantity() {
-        return quantity;
-    }
-
     public double getValue() {
         return value;
+    }
+
+    public int getQuantity() {
+        return quantity;
     }
 
     public void setQuantity(int quantity) {
@@ -44,5 +43,4 @@ public class CoinsData {
     public void increaseQuantity(int quantity) {
         this.quantity += quantity;
     }
-
 }

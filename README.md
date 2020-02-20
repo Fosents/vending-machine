@@ -1,2 +1,4 @@
 # vending-machine
-My console Vending machine project.  User mode choose product and enters coin by coin until sum meets the price and gets the product or cancel anytime and gets money back coin by coin.   Maintenance mode load the machine with coins and products.
+My console Vending Machine ver 3.00. 
+User mode select product, insert coins, get product and collect change or cancel anytime and get coins back.
+Maintenance mode to load or remove coins and products in the machine.

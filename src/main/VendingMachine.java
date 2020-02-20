@@ -1,39 +1,92 @@
 package main;
 
-import coins.CoinsData;
-import coins.InitCoins;
-import menu.MenuMain;
-import products.InitProducts;
-import products.ProductData;
+import storage.*;
+import utils.InitData;
+import utils.StateSaver;
 
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.Map;
 
 /**
  * Start VM Class
  */
 public class VendingMachine {
 
-    final String WELCOME = "WELCOME TO MY VM VER. 2.00\n";
-
-
-    ArrayList<ProductData> products;
-    ArrayList<CoinsData> coins;
-
+    Storage<ProductData> products;
+    Storage<CoinsData> coins;
 
     public VendingMachine() {
-        InitCoins initCoins = new InitCoins();
-        InitProducts initProducts = new InitProducts();
-        coins = initCoins.preload();
-        products = initProducts.preload();
+        this.products = new Storage<>();
+        //load products for test
+        this.products = new InitData().products();
+        this.coins = new Storage<>();
+        //load coins for test
+        this.coins = new InitData().coins();
+    }
+
+    public void loadProduct(String name, double price, int quantity) {
+        this.products.loadItem(products.getSize() + 1, new ProductData(name, price, quantity));
+        new StateSaver().updateProducts(this.products);
+    }
+
+    public void loadCoin(String name, double price, int quantity) {
+        this.coins.loadItem(coins.getSize() + 1, new CoinsData(name, price, quantity));
+        new StateSaver().updateCoins(this.coins);
+    }
+
+    public void removeProduct(int position) {
+        this.products.removeItem(position);
+        new StateSaver().updateProducts(products);
+    }
+
+    public void removeCoin(int position) {
+        this.coins.removeItem(position);
+        new StateSaver().updateCoins(this.coins);
+    }
+
+    public void increaseProductQuantity(int productIndex, int quantity) {
+        products.getItem(productIndex).increaseQuantity(quantity);
+        new StateSaver().updateProducts(this.products);
+    }
+
+    public void increaseCoinQuantity(int coinIndex, int quantity) {
+        coins.getItem(coinIndex).increaseQuantity(quantity);
+        new StateSaver().updateCoins(this.coins);
+    }
+
+    public void decreaseProductQuantity(int productIndex) {
+        products.getItem(productIndex).decreaseQuantity();
+        new StateSaver().updateProducts(this.products);
+    }
+
+    public Storage<ProductData> getProducts() {
+        return this.products;
+    }
+
+    public Map<Integer, ProductData> getProductsStorage() {
+        return products.getStorage();
+    }
+
+    public int getProductsSize() {
+        return this.products.getSize();
+    }
+
+    public Storage<CoinsData> getCoins() {
+        return this.coins;
+    }
+
+    public Map<Integer, CoinsData> getCoinsStorage() {
+        return coins.getStorage();
+    }
+
+    public int getCoinsSize() {
+        return this.coins.getSize();
     }
 
     /**
-     * The main menu
+     * @return - ten cents coins quantity
      */
-    public void initMainMenu() {
-        MenuMain menuMain = new MenuMain();
-        System.out.println(WELCOME);
-        menuMain.init(products, coins);
+    public int getTenCentsCoinsQuantity() {
+        return coins.getStorage().get(1).getQuantity();
     }
+
 }
