@@ -1,0 +1,8 @@
+Water,0.6,6
+Coke,1.1,8
+Croissant,0.7,14
+Mars,0.5,10
+Snickers,0.6,10
+Juice,0.9,10
+Crackers,1.3,10
+Beans,1.2,9

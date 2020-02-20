@@ -21,7 +21,7 @@ public class Main {
         VendingMachine vm = VendingMachineFactory.createVM();
         UserInput input = UserInputFactory.createUserInput();
         MenuPrinter printer = MenuPrinterFactory.createMenuPrinter();
-        MainState main = MainStateLoader.initState(vm, input, printer);
+        MainState main = StateLoader.initMainState(vm, input, printer);
         do {
             State state = main.initMenu();
             IState currentState = StateLoader.initState(vm, input, printer, state);

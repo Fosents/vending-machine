@@ -1,6 +1,8 @@
 package main;
 
 import storage.*;
+import utils.InitData;
+import utils.StateSaver;
 
 import java.util.Map;
 
@@ -15,21 +17,45 @@ public class VendingMachine {
     public VendingMachine() {
         this.products = new Storage<>();
         //load products for test
-        this.products = new InitProducts().preload(products);
+        this.products = new InitData().products();
         this.coins = new Storage<>();
         //load coins for test
-        this.coins = new InitCoins().preload(coins);
-    }
-
-    /**
-     * @return - ten cents coins quantity
-     */
-    public int getTenCentsCoinsQuantity() {
-        return coins.getStorage().get(1).getQuantity();
+        this.coins = new InitData().coins();
     }
 
     public void loadProduct(String name, double price, int quantity) {
         this.products.loadItem(products.getSize() + 1, new ProductData(name, price, quantity));
+        new StateSaver().updateProducts(this.products);
+    }
+
+    public void loadCoin(String name, double price, int quantity) {
+        this.coins.loadItem(coins.getSize() + 1, new CoinsData(name, price, quantity));
+        new StateSaver().updateCoins(this.coins);
+    }
+
+    public void removeProduct(int position) {
+        this.products.removeItem(position);
+        new StateSaver().updateProducts(products);
+    }
+
+    public void removeCoin(int position) {
+        this.coins.removeItem(position);
+        new StateSaver().updateCoins(this.coins);
+    }
+
+    public void increaseProductQuantity(int productIndex, int quantity) {
+        products.getItem(productIndex).increaseQuantity(quantity);
+        new StateSaver().updateProducts(this.products);
+    }
+
+    public void increaseCoinQuantity(int coinIndex, int quantity) {
+        coins.getItem(coinIndex).increaseQuantity(quantity);
+        new StateSaver().updateCoins(this.coins);
+    }
+
+    public void decreaseProductQuantity(int productIndex) {
+        products.getItem(productIndex).decreaseQuantity();
+        new StateSaver().updateProducts(this.products);
     }
 
     public Storage<ProductData> getProducts() {
@@ -56,16 +82,11 @@ public class VendingMachine {
         return this.coins.getSize();
     }
 
-    public void removeProduct(int position) {
-        this.products.removeItem(position);
-    }
-
-    public void loadCoin(String name, double price, int quantity) {
-        this.coins.loadItem(coins.getSize() + 1, new CoinsData(name, price, quantity));
-    }
-
-    public void removeCoin(int position) {
-        this.coins.removeItem(position);
+    /**
+     * @return - ten cents coins quantity
+     */
+    public int getTenCentsCoinsQuantity() {
+        return coins.getStorage().get(1).getQuantity();
     }
 
 }

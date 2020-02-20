@@ -101,6 +101,7 @@ public class CoinsCounter {
             coinsAsChange.append(coins.getItem(coinIndex).getName()).append(" ")
                     .append("(").append(quantityTemp).append(")").append(" ");
         }
+        new StateSaver().updateCoins(coins);
         return coinsAsChange.toString();
     }
 
@@ -116,6 +117,7 @@ public class CoinsCounter {
             }
         }
         coinsTemp = new ArrayList<>();
+        new StateSaver().updateCoins(coins);
     }
 
     /**

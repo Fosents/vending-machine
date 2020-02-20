@@ -4,6 +4,7 @@ import main.VendingMachine;
 import menu.MenuPrinter;
 import states.IState;
 import utils.CoinsCounter;
+import utils.StateSaver;
 import utils.UserInput;
 
 public class UserState implements IState {
@@ -94,7 +95,7 @@ public class UserState implements IState {
         if (insertedAmount >= selectedProductPrice) {
             counter.addInsertedCoins(vm.getCoins());
 
-            vm.getProducts().getItem(productIndex).decreaseQuantity();
+            vm.decreaseProductQuantity(productIndex);
 
             String change = counter.calculateChange(insertedAmount, selectedProductPrice);
             printer.printRemainingAmountToInsert(vm, productIndex, insertedAmount);

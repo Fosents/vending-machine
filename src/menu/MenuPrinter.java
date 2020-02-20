@@ -39,18 +39,32 @@ public class MenuPrinter {
         printWithSeparator(MAINTENANCE_MENU_SELECT);
     }
 
-
-
     /**
      * Print the remaining products in the machine.
      */
     public void printProducts(Map<Integer, ProductData> storage) {
         StringBuilder builder = new StringBuilder();
         if (storage.size() > 0) {
-            storage.forEach((key, value) -> builder.append(value.getName()).append(" ").append(value.getQuantity()).append(" "));
-            builder.deleteCharAt(builder.toString().length() - 1);
+            builder.append("Products = ");
+            storage.forEach((key, value) -> builder.append(value.getName()).append(": ").append(value.getQuantity()).append(" | "));
+            builder.delete(builder.toString().length() - 3, builder.toString().length() - 1);
         } else {
             builder.append(NO_PRODUCTS);
+        }
+        printWithSeparator(builder.toString());
+    }
+
+    /**
+     * show the remaining coins in the machine.
+     */
+    public void printCoins(Map<Integer, CoinsData> storage) {
+        StringBuilder builder = new StringBuilder();
+        if (storage.size() > 0) {
+            builder.append("Coins = ");
+            storage.forEach((key, value) -> builder.append(value.getName()).append(": ").append(value.getQuantity()).append(" | "));
+            builder.delete(builder.toString().length() - 3, builder.toString().length() - 1);
+        } else {
+            builder.append(NO_COINS);
         }
         printWithSeparator(builder.toString());
     }
@@ -74,7 +88,7 @@ public class MenuPrinter {
         if (!isMaintenance) {
             builder.delete(builder.length() - 2, builder.length());
         }
-                builder.append(isMaintenance ? maintenanceAddOptions(vm) : "");
+                builder.append(isMaintenance ? maintenanceAddOptions(vm.getProductsSize()) : "");
 
         return builder.toString();
     }
@@ -86,16 +100,13 @@ public class MenuPrinter {
     String defCoinMenu(VendingMachine vm, boolean isMaintenance) {
         StringBuilder builder = new StringBuilder();
         vm.getCoinsStorage().forEach((key, value) -> builder
-                .append("[")
-                .append(key)
-                .append("] ")
-                .append(sameLength(value.getName(),8))
+                .append(sameLength("[" + key + "] " + value.getName(),18))
                 .append(isMaintenance ? " | QUANTITY: " + value.getQuantity() : "")
                 .append(System.lineSeparator()));
         if (!isMaintenance) {
-            builder.delete(builder.length() - 2, builder.length());
+            builder.append(CANCEL_OPTION);
         }
-        builder.append(isMaintenance ? maintenanceAddOptions(vm) : "");
+        builder.append(isMaintenance ? maintenanceAddOptions(vm.getCoinsSize()) : "");
 
         return builder.toString();
     }
@@ -152,26 +163,12 @@ public class MenuPrinter {
 
 
 
-    StringBuilder maintenanceAddOptions(VendingMachine vm) {
-        return new StringBuilder("[").append(vm.getProductsSize() + 1).append("] ")
+    StringBuilder maintenanceAddOptions(int storageSize) {
+        return new StringBuilder("[").append(storageSize + 1).append("] ")
                 .append(INSERT_NEW).append(System.lineSeparator())
-                .append("[").append(vm.getProductsSize() + 2).append("] ")
+                .append("[").append(storageSize + 2).append("] ")
                 .append(REMOVE).append(System.lineSeparator())
                 .append(CANCEL_OPTION);
-    }
-
-    /**
-     * show the remaining coins in the machine.
-     */
-    public void printCoins(Map<Integer, CoinsData> storage) {
-        StringBuilder builder = new StringBuilder();
-        if (storage.size() > 0) {
-            storage.forEach((key, value) -> builder.append(value.getName()).append(" ").append(value.getQuantity()).append(" "));
-            builder.deleteCharAt(builder.toString().length() - 1);
-        } else {
-            builder.append(NO_COINS);
-        }
-        printWithSeparator(builder.toString());
     }
 
     public void printRemainingAmountToInsert(VendingMachine vm, int selectedProduct, Double insertedAmount) {

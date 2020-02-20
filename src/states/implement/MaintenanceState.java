@@ -35,9 +35,9 @@ public class MaintenanceState implements IState {
      */
     @Override
     public void initMenu() {
-        checkForWarnings();
         boolean isPassEntered = enterPasswordState(); //TODO not best option
         while (true) {
+            checkForWarnings();
             if (!isPassEntered) {
                 break;
             }
@@ -104,13 +104,13 @@ public class MaintenanceState implements IState {
         while (true) {
             printer.printCoins(vm.getCoinsStorage());
             printer.printCoinsMenuMaintenance(vm);
-            int choice = input.getInt();
-            if (choice > 0 && choice <= vm.getCoinsSize()) {
-                printer.printWithSeparator("ENTER " + vm.getCoins().getItem(choice).getName() + " COINS AMOUNT");
-                int quantityInsert = input.getInt();
-                vm.getCoins().getItem(choice).increaseQuantity(quantityInsert);
-                printer.printWithSeparator(quantityInsert + " " + vm.getCoins().getItem(choice).getName() + " COINS ADDED");
-            } else if (choice == 0) {
+            int coinIndex = input.getInt();
+            if (coinIndex > 0 && coinIndex <= vm.getCoinsSize()) {
+                printer.printWithSeparator("ENTER " + vm.getCoins().getItem(coinIndex).getName() + " COINS AMOUNT");
+                int quantityToInsert = input.getInt();
+                vm.increaseCoinQuantity(coinIndex, quantityToInsert);
+                printer.printWithSeparator(quantityToInsert + " " + vm.getCoins().getItem(coinIndex).getName() + " COINS ADDED");
+            } else if (coinIndex == 0) {
                 break;
             } else {
                 printer.printNotValidOption();
@@ -124,17 +124,17 @@ public class MaintenanceState implements IState {
     void maintenanceInsertProductState() {
         while (true) {
             printer.printProductMenuMaintenance(vm);
-            int choice = input.getInt();
-            if (choice == 0) {
+            int productIndex = input.getInt();
+            if (productIndex == 0) {
                 break;
-            } else if (choice > 0 && choice <= vm.getProductsSize()) {
-                printer.printWithSeparator("ENTER " + vm.getProducts().getItem(choice).getName() + " QUANTITY TO INSERT");
-                int quantityInsert = input.getInt();
-                vm.getProducts().getItem(choice).increaseQuantity(quantityInsert);
-                printer.printWithSeparator(quantityInsert + " " + vm.getProducts().getItem(choice).getName() + " QUANTITY ADDED");
-            } else if (choice == vm.getProductsSize() + 1) {
+            } else if (productIndex > 0 && productIndex <= vm.getProductsSize()) {
+                printer.printWithSeparator("ENTER " + vm.getProducts().getItem(productIndex).getName() + " QUANTITY TO INSERT");
+                int quantityToInsert = input.getInt();
+                vm.increaseProductQuantity(productIndex, quantityToInsert);
+                printer.printWithSeparator(quantityToInsert + " " + vm.getProducts().getItem(productIndex).getName() + " QUANTITY ADDED");
+            } else if (productIndex == vm.getProductsSize() + 1) {
                 insertNewProductState();
-            } else if (choice == vm.getProductsSize() + 2) {
+            } else if (productIndex == vm.getProductsSize() + 2) {
                 removeProductState();
             } else {
                 printer.printNotValidOption();
@@ -143,13 +143,17 @@ public class MaintenanceState implements IState {
     }
 
     void insertNewProductState() {
-        printer.printWithSeparator(ENTER_NAME);
-        String name = input.getString();
-        printer.printWithSeparator(ENTER_PRICE);
-        double price = input.getDouble();
-        printer.printWithSeparator(ENTER_QUANTITY);
-        int quantity = input.getInt();
-        vm.loadProduct(name, price, quantity);
+        if (vm.getProductsSize() < 20) {
+            printer.printWithSeparator(ENTER_NAME);
+            String name = input.getString();
+            printer.printWithSeparator(ENTER_PRICE);
+            double price = input.getDouble();
+            printer.printWithSeparator(ENTER_QUANTITY);
+            int quantity = input.getInt();
+            vm.loadProduct(name, price, quantity);
+        } else {
+            printer.printWithSeparator("Machine already at full capacity");
+        }
     }
 
     void removeProductState() {
