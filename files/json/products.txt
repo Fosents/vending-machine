@@ -1,0 +1,10 @@
+{"data":[
+{"name":"Water","price":"0.60","quantity":"7"}
+{"name":"Coke","price":"1.10","quantity":"7"}
+{"name":"Croissant","price":"0.70","quantity":"7"}
+{"name":"Mars","price":"0.50","quantity":"7"}
+{"name":"Snickers","price":"0.60","quantity":"7"}
+{"name":"Juice","price":"0.90","quantity":"7"}
+{"name":"Crackers","price":"1.30","quantity":"7"}
+{"name":"Beans","price":"1.20","quantity":"7"}
+]}
