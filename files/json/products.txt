@@ -69,7 +69,7 @@
          "name":"Ring",
          "price":"4.90",
          "quantity":"3"
-      }
+      },
    ]
 
 }
