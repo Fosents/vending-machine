@@ -2,6 +2,7 @@ package utils;
 
 import storage.CoinsData;
 import storage.Storage;
+import storage.StorageType;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -77,31 +78,34 @@ public class CoinsCounter {
      * @param calcChange - the amount of change
      * @return - returned coins as String
      */
-    public String calculateReturningCoins(String calcChange, Storage<CoinsData> coins) {
+    public String calculateReturningCoins(String calcChange, Storage<CoinsData> coinsStorage) {
         StringBuilder coinsAsChange = new StringBuilder();
         BigDecimal calculatedChangeDecimal = new BigDecimal(calcChange);
 
         while (Double.parseDouble(calculatedChangeDecimal.toString()) > 0.00) {
             int coinIndex = 1;
-            for (int i = 1; i < coins.getSize(); i++) {
-                if (coins.getItem(i).getQuantity() > 0 &&
-                        coins.getItem(i).getValue() <= Double.parseDouble(calculatedChangeDecimal.toString()) &&
-                                coins.getItem(i).getValue() > coins.getItem(coinIndex).getValue()){
+            for (int i = 1; i < coinsStorage.getSize(); i++) {
+                int quantity = coinsStorage.getItem(i).getQuantity();
+                double price = coinsStorage.getItem(i).getValue();
+                double change = Double.parseDouble(calculatedChangeDecimal.toString());
+                if (quantity > 0 &&
+                        price <= change &&
+                        coinsStorage.getItem(i).getValue() > coinsStorage.getItem(coinIndex).getValue()){
                     coinIndex = i;
                 }
             }
             int quantityTemp = 0;
-            while (coins.getItem(coinIndex).getValue() <= Double.parseDouble(calculatedChangeDecimal.toString()) &&
-                    coins.getItem(coinIndex).getQuantity() > 0) {
-                coins.getItem(coinIndex).decreaseQuantity();
+            while (coinsStorage.getItem(coinIndex).getValue() <= Double.parseDouble(calculatedChangeDecimal.toString()) &&
+                    coinsStorage.getItem(coinIndex).getQuantity() > 0) {
+                coinsStorage.getItem(coinIndex).decreaseQuantity();
                 quantityTemp ++;
-                BigDecimal coinValueDecimal = BigDecimal.valueOf(coins.getItem(coinIndex).getValue());
+                BigDecimal coinValueDecimal = BigDecimal.valueOf(coinsStorage.getItem(coinIndex).getValue());
                 calculatedChangeDecimal = calculatedChangeDecimal.subtract(coinValueDecimal);
             }
-            coinsAsChange.append(coins.getItem(coinIndex).getName()).append(" ")
+            coinsAsChange.append(coinsStorage.getItem(coinIndex).getName()).append(" ")
                     .append("(").append(quantityTemp).append(")").append(" ");
         }
-        new StateSaver().updateCoins(coins);
+        new StateSaver().updateCoins(coinsStorage);
         return coinsAsChange.toString();
     }
 
@@ -113,11 +117,13 @@ public class CoinsCounter {
             for (CoinsData coin : coins.getStorage().values()) {
                 if (coin.getName().equals(coinTemp.getName())) {
                     coin.increaseQuantity(coinTemp.getQuantity());
+                    new StateSaver().updateItemQuantity(StorageType.COINS, coin.getName(), coin.getQuantity());
+                    break;
                 }
             }
         }
         coinsTemp = new ArrayList<>();
-        new StateSaver().updateCoins(coins);
+//        new StateSaver().updateCoins(coins);
     }
 
     /**

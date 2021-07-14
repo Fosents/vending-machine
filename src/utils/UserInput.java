@@ -52,14 +52,14 @@ public class UserInput {
     }
 
     public String getString() {
-        return (this.getInput(Input.STRING));
+        return this.getInput(Input.STRING);
     }
 
 
 
-    public void printState(String str) {
+    public void printState(String state) {
         System.out.println(SEPARATOR);
-        System.out.println(str);
+        System.out.println(state);
         System.out.println(SEPARATOR);
     }
 }

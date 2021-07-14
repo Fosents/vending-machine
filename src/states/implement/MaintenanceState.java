@@ -2,7 +2,6 @@ package states.implement;
 
 import main.VendingMachine;
 import menu.MenuPrinter;
-import org.omg.CORBA.PRIVATE_MEMBER;
 import states.IState;
 import storage.ProductData;
 import utils.UserInput;

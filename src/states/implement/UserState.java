@@ -72,7 +72,7 @@ public class UserState implements IState {
 
     /**
      * Loops through insert coins until coins meet the price or user cancels order
-     * @param productIndex - number of the chosen product
+     * @param productIndex - number of the selected product
      */
     private void insertCoins(int productIndex) {
         CoinsCounter counter = new CoinsCounter(vm.getCoins());

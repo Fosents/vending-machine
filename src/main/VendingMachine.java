@@ -15,12 +15,10 @@ public class VendingMachine {
     Storage<CoinsData> coins;
 
     public VendingMachine() {
-        this.products = new Storage<>();
-        //load products for test
-        this.products = new InitData().products();
-        this.coins = new Storage<>();
-        //load coins for test
-        this.coins = new InitData().coins();
+//        this.products = new InitData().products();
+        this.products = new InitData().loadProductsToStorage();
+//        this.coins = new Storage<>();
+        this.coins = new InitData().loadCoinsToStorage();
     }
 
     public void loadProduct(String name, double price, int quantity) {
@@ -55,7 +53,9 @@ public class VendingMachine {
 
     public void decreaseProductQuantity(int productIndex) {
         products.getItem(productIndex).decreaseQuantity();
-        new StateSaver().updateProducts(this.products);
+//        new StateSaver().updateProducts(this.products);
+        int quantity = products.getItem(productIndex).getQuantity();
+        new StateSaver().updateItemQuantity(StorageType.PRODUCTS, products.getItem(productIndex).getName(), quantity);
     }
 
     public Storage<ProductData> getProducts() {
